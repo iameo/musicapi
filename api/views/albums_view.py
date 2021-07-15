@@ -42,4 +42,10 @@ async def get_album(name):
     return album
 
 
+@album_view.get("/albums/", response_model=List[schema.AlbumBase])
+async def get_albums(skip: int = 0, limit: int = 10):
+    album_list = await crud.get_albums(skip=skip, limit=limit)
+    if album_list is None:
+        raise HTTPException(status_code=404, detail="No album at this time!")
+    return album_list
 
