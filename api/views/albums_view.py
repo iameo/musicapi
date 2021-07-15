@@ -33,3 +33,13 @@ async def add_album(
     if _album:
         raise HTTPException(status_code=400, detail="album already exists!")
     return await crud.add_album(payload)
+
+@album_view.get("/albums/{name}", response_model=schema.AlbumBase)
+async def get_album(name):
+    album = await crud.get_album(name=name)
+    if album is None:
+        raise HTTPException(status_code=404, detail=f"No album found with name {name}!")
+    return album
+
+
+
