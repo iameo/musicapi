@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 import re
 import requests
 
-from .. import schema
+from .. import schema, crud
 
 
 from typing import List
@@ -28,3 +28,13 @@ async def update_song(song_id: int, song: schema.MusicBase):
     results = {"song_id": song_id, "song": song}
     return results
  
+
+@music_view.post("/songs/")
+async def add_song(
+    payload: schema.MusicBase
+):
+    _song = await crud.get_song_detail(artist=payload.artist, title=payload.title)
+    if _song:
+        raise HTTPException(status_code=400, detail="song already exists!")
+    return await crud.add_song(payload)
+
