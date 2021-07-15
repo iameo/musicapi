@@ -44,5 +44,7 @@ async def add_album(payload: schema.AlbumCreate):
     query = albumz.insert().values(**payload.dict())
     return await database.execute(query=query)
 
-
+async def get_album(name):
+    query = albumz.select(albumz.c.name==name)
+    return await database.fetch_one(query=query)
 
