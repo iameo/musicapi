@@ -38,3 +38,10 @@ async def add_song(
         raise HTTPException(status_code=400, detail="song already exists!")
     return await crud.add_song(payload)
 
+
+@music_view.get("/songs/", response_model=List[schema.MusicBase])
+async def get_songs(skip: int = 0, limit: int = 10):
+    song_list = await crud.get_songs(skip=skip, limit=limit)
+    if song_list is None:
+        raise HTTPException(status_code=404, detail="No song at this time!")
+    return song_list
