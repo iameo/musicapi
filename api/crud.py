@@ -2,11 +2,11 @@
 
 from api import schema
 
-from api.db import song, Album, database
+from api.db import song, Album, database, albumz
 
 
 
-###########################MUSIC#####################################
+###########################SONG#####################################
 
 async def add_song(payload: schema.MusicCreate):
     query = song.insert().values(**payload.dict())
@@ -36,4 +36,13 @@ async def update_song(id: int, payload: schema.MusicCreate): #I can't think of a
         .values(**payload.dict())
     )
     return await database.execute(query=query)
+
+
+######################## ALBUM ################################
+
+async def add_album(payload: schema.AlbumCreate):
+    query = albumz.insert().values(**payload.dict())
+    return await database.execute(query=query)
+
+
 
