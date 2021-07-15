@@ -48,3 +48,11 @@ async def get_album(name):
     query = albumz.select(albumz.c.name==name)
     return await database.fetch_one(query=query)
 
+async def get_album_detail(name, artist):
+    query = albumz.select().where(albumz.c.name==name).where(albumz.c.artist==artist)
+    return await database.fetch_one(query=query)
+
+async def get_albums(skip: int = 0, limit: int = 10):
+    query = albumz.select().order_by(albumz.c.id.desc()).offset(skip).limit(limit)
+    return await database.fetch_all(query=query)
+
