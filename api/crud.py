@@ -56,3 +56,9 @@ async def get_albums(skip: int = 0, limit: int = 10):
     query = albumz.select().order_by(albumz.c.id.desc()).offset(skip).limit(limit)
     return await database.fetch_all(query=query)
 
+async def get_album_by_id(id):
+    query = albumz.select(albumz.c.id==id)
+    return await database.fetch_one(query=query)
+
+
+
