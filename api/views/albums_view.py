@@ -35,7 +35,7 @@ async def add_album(
     return await crud.add_album(payload)
 
 @album_view.get("/albums/{name}", response_model=schema.AlbumBase)
-async def get_album(name):
+async def get_album(name: str):
     album = await crud.get_album(name=name)
     if album is None:
         raise HTTPException(status_code=404, detail=f"No album found with name {name}!")
@@ -49,3 +49,9 @@ async def get_albums(skip: int = 0, limit: int = 10):
         raise HTTPException(status_code=404, detail="No album at this time!")
     return album_list
 
+@album_view.get("/album/{id}", response_model=schema.AlbumBase)
+async def get_album_by_id(id: int):
+    album = await crud.get_album_by_id(id=id)
+    if album is None:
+        raise HTTPException(status_code=404, detail=f"No album found with id {id}!")
+    return album
