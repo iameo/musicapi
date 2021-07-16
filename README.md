@@ -6,6 +6,7 @@ A nonsensical ASYNC music api using FastApi, Sqlalchemy and Ormar.
 
 ### HOW TO RUN
 - cd into cloned package
+- rename .env.example to .env
 - terminal: ```python run.py```
 - Browser: https://127.0.0.1:5000
 - play around with the endpoints - break it, fix it, improve it!
