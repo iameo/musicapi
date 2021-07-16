@@ -2,63 +2,45 @@
 
 from api import schema
 
-from api.db import song, Album, database, albumz
+from api.db import Song, Album
 
 
 
 ###########################SONG#####################################
 
 async def add_song(payload: schema.MusicCreate):
-    query = song.insert().values(**payload.dict())
-    return await database.execute(query=query)
+    song = Song.objects.create(**payload.dict())
+    return await song
 
 async def get_song(title):
-    query = song.select(song.c.title==title)
-    return await database.fetch_one(query=query)
+    song = Song.objects.get(title=title)
+    return await song
 
-async def get_song_detail(artist, title):
-    query = song.select().where(song.c.artist==artist).where(song.c.title==title)
-    return await database.fetch_one(query=query)
+async def get_songs_by_title(title: str):
+    song = Song.objects.all(title=title)
+    return await song
 
 async def get_songs(skip: int = 0, limit: int = 10):
-    query = song.select().order_by(song.c.id.desc()).offset(skip).limit(limit)
-    return await database.fetch_all(query=query)
-
-async def delete_song(id: int):
-    query = song.delete().where(song.c.id==id)
-    return await database.execute(query=query)
-
-async def update_song(id: int, payload: schema.MusicCreate): #I can't think of a possible usecase for now
-    query = (
-        song
-        .update()
-        .where(song.c.id == id)
-        .values(**payload.dict())
-    )
-    return await database.execute(query=query)
+    songs = Song.objects.order_by(Song.id.desc()).offset(skip).limit(limit).all()
+    return await songs
 
 
-######################## ALBUM ################################
+
+# ######################## ALBUM ################################
+
 
 async def add_album(payload: schema.AlbumCreate):
-    query = albumz.insert().values(**payload.dict())
-    return await database.execute(query=query)
+    album = Album.objects.create(**payload.dict())
+    return await album
 
 async def get_album(name):
-    query = albumz.select(albumz.c.name==name)
-    return await database.fetch_one(query=query)
+    album = Album.objects.get(name=name)
+    return await album
 
-async def get_album_detail(name, artist):
-    query = albumz.select().where(albumz.c.name==name).where(albumz.c.artist==artist)
-    return await database.fetch_one(query=query)
+async def get_albums_by_name(name: str):
+    album = Album.objects.all(name=name)
+    return await album
 
 async def get_albums(skip: int = 0, limit: int = 10):
-    query = albumz.select().order_by(albumz.c.id.desc()).offset(skip).limit(limit)
-    return await database.fetch_all(query=query)
-
-async def get_album_by_id(id):
-    query = albumz.select(albumz.c.id==id)
-    return await database.fetch_one(query=query)
-
-
-
+    albums = Album.objects.order_by(Album.id.desc()).offset(skip).limit(limit).all()
+    return await albums
