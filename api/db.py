@@ -1,10 +1,14 @@
 import os
 
-from sqlalchemy import (Column, DateTime, Integer, MetaData, String, Table,
-                        create_engine, sql, ListColumn, Image, File, ForeignKey)
+from sqlalchemy import sql
 import sqlalchemy
 from databases import Database
+
+import ormar
+
 from datetime import datetime
+
+from typing import Optional, List
 
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -12,35 +16,32 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
-DATABASE_URI = os.getenv('SQLAlCHEMY_DATABASE_URL')
 
+DATABASE_URI = os.getenv('SQLAlCHEMY_DATABASE_URL', f'sqlite:///vegd1gr.db')
+
+database = Database(DATABASE_URI)
 metadata = sqlalchemy.MetaData()
 
-
-song = Table(
-    'song',
-    metadata,
-    Column('id', Integer, primary_key=True, index=True),
-    Column('title', String(100), index=True),
-    Column('artist', String(100)),
-    Column('cover_image', Image()),
-    Column('audio_file', File()),
-    Column('uploaded_at', DateTime(timezone=True), server_default=sql.func.now())
-)
+current_year = int(datetime.now().year)
 
 
-album = Table(
-    'album',
-    metadata,
-    Column('album_id', Integer, ForeignKey('song.id'), primary_key=True, index=True),
-    Column('title', String(100), index=True),
-    Column('cover_image', String(100)),
-    Column('tracks', ListColumn()),
-    Column('production_year', DateTime(timezone=True), server_default=sql.func.now())
-)
+class Artist(ormar.Model):
+    class Meta:
+        tablename = "artists"
+        metadata = metadata
+        database = database
+
+    id: int = ormar.Integer(primary_key=True)
+    name: str = ormar.String(max_length=100, nullable=False, index=True)
+    record_label: str = ormar.String(max_length=100, nullable=False, index=True, default='Not signed to any label!')
+
+
+
+
 
 engine = sqlalchemy.create_engine(
     DATABASE_URI, connect_args={"check_same_thread": False}
 )
 
-database = Database(DATABASE_URI)
+# metadata.drop_all(engine)
+# metadata.create_all(engine)
