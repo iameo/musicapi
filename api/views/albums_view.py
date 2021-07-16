@@ -13,12 +13,10 @@ from typing import List
 from fastapi import APIRouter, Path
 import json
 
-import os
-from os.path import join, dirname
-from dotenv import load_dotenv
+import ormar
 
-dotenv_path = join(dirname(__file__), ".env")
-load_dotenv(dotenv_path)
+from api.db import Album
+
 
 
 album_view = APIRouter()
@@ -27,12 +25,12 @@ album_view = APIRouter()
 
 @album_view.post("/albums/")
 async def add_album(
-    payload: schema.AlbumBase
+    payload: Album
 ):
-    _album = await crud.get_album_detail(name=payload.name, artist=payload.artist)
-    if _album:
-        raise HTTPException(status_code=400, detail="album already exists!")
-    return await crud.add_album(payload)
+    return await crud.add_album(payload) 
+    # if _album:
+    #     raise HTTPException(status_code=400, detail="album already exists!")
+    # return await crud.add_album(payload)
 
 @album_view.get("/albums/{name}", response_model=schema.AlbumBase)
 async def get_album(name: str):
@@ -41,8 +39,15 @@ async def get_album(name: str):
         raise HTTPException(status_code=404, detail=f"No album found with name {name}!")
     return album
 
+@album_view.get("/albumz/", response_model=schema.AlbumBase)
+async def get_album_by_detail(name: str, artist: str):
+    album = await crud.get_album_detail(name=name, artist=artist)
+    if album is None:
+        raise HTTPException(status_code=404, detail=f"No album found with name {name}!")
+    return album
 
-@album_view.get("/albums/", response_model=List[schema.AlbumBase])
+
+@album_view.get("/albums/")
 async def get_albums(skip: int = 0, limit: int = 10):
     album_list = await crud.get_albums(skip=skip, limit=limit)
     if album_list is None:
