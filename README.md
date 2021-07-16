@@ -15,6 +15,8 @@ A nonsensical ASYNC music api using FastApi, Sqlalchemy and Ormar.
 
 ###### Song Model - cover image and audio file uses LargeBinary
 ```python
+
+#####api/db.py
 class Song(ormar.Model):
     class Meta:
         tablename = "songs"
