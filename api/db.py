@@ -64,7 +64,7 @@ class Album(ormar.Model):
     id: int = ormar.Integer(primary_key=True)
     name: str = ormar.String(name="album_name", max_length=100, nullable=False, index=True)
     artist: Optional[Artist] = ormar.ForeignKey(Artist, order_by=["name"], name="artist_id",  related_orders_by=["-year"], blank=False, null=False)
-    tracks: Optional[List[Song]] = ormar.ForeignKey(Song, order_by=["name"], name="song_id",  related_orders_by=["-year"], blank=False, null=False, po)
+    tracks: Optional[List[Song]] = ormar.ForeignKey(Song, order_by=["name"], name="song_id",  related_orders_by=["-year"], blank=False, null=False)
     cover_image: Optional[bytes] = ormar.LargeBinary(max_length=1000)
     production_year: int = ormar.Integer(default=current_year)
     uploaded_at: datetime = ormar.DateTime(timezone=True, server_default=sql.func.now())
