@@ -4,6 +4,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.views.songs_view import music_view
+from api.views.albums_view import album_view
+from api.views.artists_view import artist_view
 
 from api.db import metadata, database, engine
 
@@ -14,7 +16,7 @@ app = FastAPI(
     description="API for uploading songs!",
     version="alpha")
 
-
+app.state.database = database
 
 origins = [
     "http://127.0.0.1:5000",
@@ -32,16 +34,21 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    await database.connect()
+    database_ = app.state.database
+    if not database_.is_connected:
+        await database_.connect()
 
 @app.on_event("shutdown")
 async def shutdown():
-    await database.disconnect()
-
+    database_ = app.state.database
+    if not database_.is_connected:
+        await database_.connect()
 
 # Redirect to docs
 @app.get("/", tags=['Docs'])
 def docs():
     return RedirectResponse('/docs')
 
-app.include_router(music_view,prefix="/api/v1/resources",tags=["Songs"])
+app.include_router(music_view, prefix="/api/v1/resources",tags=["Songs"])
+app.include_router(album_view, prefix="/api/v1/resources",tags=["Albums"])
+app.include_router(artist_view, prefix="/api/v1/resources",tags=["Artists"])
