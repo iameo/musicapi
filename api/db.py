@@ -17,7 +17,7 @@ dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
 
-DATABASE_URI = os.getenv('SQLAlCHEMY_DATABASE_URL', f'sqlite:///vegd1gr.db')
+DATABASE_URI = os.getenv('SQLAlCHEMY_DATABASE_URL', 'sqlite:///voodoo.db')
 
 database = Database(DATABASE_URI)
 metadata = sqlalchemy.MetaData()
