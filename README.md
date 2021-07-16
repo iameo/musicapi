@@ -13,8 +13,26 @@ A nonsensical ASYNC music api using FastApi, Sqlalchemy and Ormar.
 
 ##### This repository is for educational purposes only - on getting started with FastAPI+Ormar and doing async db transactions.
 
-Creating(POST) an Album:
+###### Song Model - cover image and audio file uses LargeBinary
+```python
+class Song(ormar.Model):
+    class Meta:
+        tablename = "songs"
+        metadata = metadata
+        database = database
+        
+        
 
+    id: int = ormar.Integer(primary_key=True)
+    title: str = ormar.String(max_length=100, nullable=False, index=True)
+    artist: Optional[Artist] = ormar.ForeignKey(Artist, blank=False, null=False)
+    cover_image: bytes = ormar.LargeBinary(max_length=1000)
+    audio_file: bytes =  ormar.LargeBinary(max_length=1000, nullable=False)
+    uploaded_at: datetime = ormar.DateTime(timezone=True, server_default=sql.func.now())
+
+```
+
+###### Creating(POST) an Album:
 ```python
 
 #####api/crud.py
