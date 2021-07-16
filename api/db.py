@@ -36,6 +36,25 @@ class Artist(ormar.Model):
     record_label: str = ormar.String(max_length=100, nullable=False, index=True, default='Not signed to any label!')
 
 
+class Song(ormar.Model):
+    class Meta:
+        tablename = "songs"
+        metadata = metadata
+        database = database
+        
+        
+
+    id: int = ormar.Integer(primary_key=True)
+    title: str = ormar.String(max_length=100, nullable=False, index=True)
+    artist: Optional[Artist] = ormar.ForeignKey(Artist, blank=False, null=False)
+    cover_image: bytes = ormar.LargeBinary(max_length=1000)
+    audio_file: bytes =  ormar.LargeBinary(max_length=1000, nullable=False)
+    uploaded_at: datetime = ormar.DateTime(timezone=True, server_default=sql.func.now())
+    
+
+
+
+
 
 
 
